@@ -13,7 +13,7 @@ async function bootstrap() {
     .setTitle('Toppik API')
     .setDescription('The Toppik API documentation')
     .setVersion('1.0')
-    .addTag('toppik') // Optional: Add tags to organize endpoints
+    .addTag('toppik')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

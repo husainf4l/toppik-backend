@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CartService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createCart(): Promise<any> {
     return this.prisma.cart.create({
@@ -34,7 +33,7 @@ export class CartService {
       },
     });
   }
-  
+
 
   async removeItemFromCart(cartItemId: string): Promise<any> {
     return this.prisma.cartItem.delete({

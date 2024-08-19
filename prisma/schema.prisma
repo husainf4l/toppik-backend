@@ -44,16 +44,16 @@ model CartItem {
 }
 
 model Order {
-  id           String       @id @default(uuid())
-  user         User?        @relation("UserOrders", fields: [userId], references: [id])
-  userId       String?
-  items        OrderItem[]
-  status       String
-  total        Float
-  shippingInfo ShippingInfo @relation(fields: [shippingInfoId], references: [id])
+  id             String       @id @default(uuid())
+  user           User?        @relation("UserOrders", fields: [userId], references: [id])
+  userId         String?
+  items          OrderItem[]
+  status         String
+  total          Float
+  shippingInfo   ShippingInfo @relation(fields: [shippingInfoId], references: [id])
   shippingInfoId String
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
 }
 
 model OrderItem {
@@ -69,15 +69,15 @@ model OrderItem {
 }
 
 model Product {
-  id          String     @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
   description String
   price       Float
   imgUrl      String
   color       String[]
-  featured    Boolean    @default(false)
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @default(now()) @updatedAt
+  featured    Boolean     @default(false)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now()) @updatedAt
   cartItems   CartItem[]
   orderItems  OrderItem[]
 }
@@ -88,5 +88,5 @@ model ShippingInfo {
   mobile    String
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  orders    Order[]  // Relation to orders
+  orders    Order[] // Relation to orders
 }

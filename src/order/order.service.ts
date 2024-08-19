@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class OrderService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async createOrder(cartId: string, address: string, mobile: string, userId?: string): Promise<any> {
     const shippingInfo = await this.prisma.shippingInfo.create({
@@ -12,7 +12,7 @@ export class OrderService {
         mobile: mobile,
       },
     });
-  
+
     const cart = await this.prisma.cart.findUnique({
       where: { id: cartId },
       include: {
@@ -23,7 +23,7 @@ export class OrderService {
         },
       },
     });
-  
+
     const order = await this.prisma.order.create({
       data: {
         userId: userId || null,  // Associate with a user if provided
@@ -47,10 +47,10 @@ export class OrderService {
         shippingInfo: true,  // Include shipping info details
       },
     });
-  
+
     return order;  // Return the full order with items and shipping info
   }
-  
+
 
   async getOrder(orderId: string): Promise<any> {
     return this.prisma.order.findUnique({
