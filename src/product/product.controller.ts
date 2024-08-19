@@ -13,7 +13,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
@@ -24,7 +24,10 @@ export class ProductController {
   findAll() {
     return this.productService.findAll();
   }
-
+  @Get('/featured')
+  findFeatured() {
+    return this.productService.findFeaturedProducts();
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(id);
@@ -40,8 +43,4 @@ export class ProductController {
     return this.productService.remove(id);
   }
 
-  @Get('category/:id')
-  findCategory(@Param('id') id: string) {
-    return this.productService.findProductByCategory(id);
-  }
 }

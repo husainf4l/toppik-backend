@@ -1,39 +1,20 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, IsArray, ArrayNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
-  title: string;
+  name: string;
 
   @IsString()
   description: string;
 
-  @IsString()
-  imgUrl1: string;
-
   @IsNumber()
   price: number;
 
-  @IsNumber()
-  quantity: number;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })  // Ensures that each item in the array is a string
+  colors: string[];
 
   @IsString()
-  size: string;
-
-  @IsString()
-  color: string;
-
-  @IsString()
-  shippings: string;
-
-  @IsString()
-  sex: string;
-
-  @IsString()
-  brands: string;
-
-  @IsString()
-  category: string;
-
-  @IsString()
-  subcategory: string;
+  imgUrl: string;
 }

@@ -1,37 +1,44 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from './entities/product.entity';
-import { DataSource, Repository } from 'typeorm';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ProductService {
-  constructor(
-    @InjectRepository(ProductEntity)
-    private productRepository: Repository<ProductEntity>,
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async create(createProductDto: CreateProductDto) {
-    const { title, description, imgUrl1 } = createProductDto;
-    const newProduct = await this.productRepository.create({
-      ...createProductDto,
-    });
-
-    await this.productRepository.save(newProduct);
-
-    return newProduct;
+    try {
+      const newProduct = await this.prisma.product.create({
+        data: {
+          ...createProductDto,
+        },
+      });
+      return newProduct;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to create product',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findAll() {
-    return await this.productRepository.find();
+    try {
+      return await this.prisma.product.findMany();
+    } catch (error) {
+      throw new HttpException(
+        'Failed to retrieve products',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findOne(id: string) {
-    const findProduct = await this.productRepository.findOne({
-      where: { id: id },
+    const findProduct = await this.prisma.product.findUnique({
+      where: { id },
     });
+
     if (!findProduct) {
       throw new HttpException('No product found!', HttpStatus.NOT_FOUND);
     }
@@ -40,74 +47,58 @@ export class ProductService {
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
-    const {
-      title,
-      description,
-      imgUrl1,
-      price,
-      quantity,
-      size,
-      color,
-      shippings,
-      sex,
-      brands,
-      category,
-      subcategory,
-    } = updateProductDto;
-
-    const findProduct = await this.productRepository.findOne({
-      where: { id: id },
+    const findProduct = await this.prisma.product.findUnique({
+      where: { id },
     });
+
     if (!findProduct) {
       throw new HttpException('No product found!', HttpStatus.NOT_FOUND);
     }
 
-    let updateProduct: any = {};
-
-    title && (updateProduct.title = title);
-    description && (updateProduct.description = description);
-    imgUrl1 && (updateProduct.imgUrl1 = imgUrl1);
-    price && (updateProduct.price = price);
-    quantity && (updateProduct.quantity = quantity);
-    size && (updateProduct.size = size);
-    color && (updateProduct.color = color);
-    shippings && (updateProduct.shippings = shippings);
-    sex && (updateProduct.sex = sex);
-    brands && (updateProduct.brands = brands);
-    category && (updateProduct.category = category);
-    subcategory && (updateProduct.subcategory = subcategory);
-
-    await this.productRepository.update(id, updateProduct);
-
-    const findProductAgain = await this.productRepository.findOne({
-      where: { id: id },
-    });
-
-    return findProductAgain;
+    try {
+      const updatedProduct = await this.prisma.product.update({
+        where: { id },
+        data: {
+          ...updateProductDto,
+        },
+      });
+      return updatedProduct;
+    } catch (error) {
+      throw new HttpException(
+        'Failed to update product',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async remove(id: string) {
-    const findProduct = await this.productRepository.findOne({
-      where: { id: id },
+    const findProduct = await this.prisma.product.findUnique({
+      where: { id },
     });
 
     if (!findProduct) {
       throw new HttpException('No product found!', HttpStatus.NOT_FOUND);
     }
 
-    await this.productRepository.remove(findProduct);
-
-    return 'the product was deleted';
+    try {
+      await this.prisma.product.delete({
+        where: { id },
+      });
+      return 'The product was deleted';
+    } catch (error) {
+      throw new HttpException(
+        'Failed to delete product',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async findProductByCategory(name: string) {
-    const findProduct = await this.dataSource
-      .getRepository(ProductEntity)
-      .createQueryBuilder('product')
-      .where('product.subcategory = :name', { name })
-      .getMany();
-    console.log('name', name);
-    console.log('findproduct ', findProduct);
-    return findProduct;
+  async findFeaturedProducts() {
+    const featuredProducts = await this.prisma.product.findMany({
+      where: {
+        featured: true
+      }
+    })
+    return featuredProducts
   }
 }

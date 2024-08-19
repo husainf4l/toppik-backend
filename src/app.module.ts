@@ -1,15 +1,18 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductModule } from './product/product.module';
-import { ProductEntity } from './product/entities/product.entity';
+import { PrismaService } from './prisma/prisma.service';
+import { CartModule } from './cart/cart.module';
+import { OrderModule } from './order/order.module';
+import { UserModule } from './user/user.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: '149.200.251.14',
+      host: 'localhost',
       port: 5432,
       username: 'husain',
       password: 'tt55oo77',
@@ -21,6 +24,6 @@ import { ProductEntity } from './product/entities/product.entity';
     ProductModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PrismaService],
 })
-export class AppModule {}
+export class AppModule { }
