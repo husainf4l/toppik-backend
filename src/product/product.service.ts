@@ -86,6 +86,8 @@ export class ProductService {
       });
       return 'The product was deleted';
     } catch (error) {
+      console.error('Error deleting product:', error);
+
       throw new HttpException(
         'Failed to delete product',
         HttpStatus.INTERNAL_SERVER_ERROR,

@@ -5,7 +5,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class OrderService {
   constructor(private prisma: PrismaService) { }
 
-  async createOrder(cartId: string, address: string, mobile: string, userId?: string): Promise<any> {
+  async createOrder(cartId: string, address: string, mobile: string, userName: string, userId?: string): Promise<any> {
     const shippingInfo = await this.prisma.shippingInfo.create({
       data: {
         address: address,
@@ -24,8 +24,13 @@ export class OrderService {
       },
     });
 
+    if (!cart) {
+      throw new NotFoundException('Cart not found');
+    }
+
     const order = await this.prisma.order.create({
       data: {
+        userName: userName || null,  // Store the user's name
         userId: userId || null,  // Associate with a user if provided
         total: cart.items.reduce((sum, item) => sum + item.quantity * item.product.price, 0),
         status: 'Pending',
@@ -35,6 +40,7 @@ export class OrderService {
             productId: item.productId,
             quantity: item.quantity,
             price: item.product.price,
+            color: item.color,  // Include the color attribute from the cart item
           })),
         },
       },
@@ -51,7 +57,6 @@ export class OrderService {
     return order;  // Return the full order with items and shipping info
   }
 
-
   async getOrder(orderId: string): Promise<any> {
     return this.prisma.order.findUnique({
       where: { id: orderId },
@@ -63,6 +68,18 @@ export class OrderService {
         },
         user: true,
         shippingInfo: true,
+      },
+    });
+  }
+
+  async getAllOrders() {
+    return this.prisma.order.findMany({
+      include: {
+        items: true,
+        shippingInfo: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }

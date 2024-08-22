@@ -16,8 +16,9 @@ export class CartController {
     @Param('id') cartId: string,
     @Body('productId') productId: string,
     @Body('quantity') quantity: number,
+    @Body('color') color: string,  // Add color parameter
   ) {
-    return this.cartService.addItemToCart(cartId, productId, quantity);
+    return this.cartService.addItemToCart(cartId, productId, quantity, color);
   }
 
   @Get(':id')
@@ -29,4 +30,9 @@ export class CartController {
   removeItemFromCart(@Param('id') cartItemId: string) {
     return this.cartService.removeItemFromCart(cartItemId);
   }
+  @Delete('delete/:id')
+  deleteCart(@Param('id') cartId: string) {
+    return this.cartService.deleteCart(cartId);
+  }
+
 }
