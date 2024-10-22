@@ -10,7 +10,7 @@ export class AuthorizedPosService {
             ? {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },
-                    { description: { contains: search, mode: 'insensitive' } },
+                    { category: { contains: search, mode: 'insensitive' } },
                     { location: { contains: search, mode: 'insensitive' } },
                 ],
             }
@@ -28,7 +28,7 @@ export class AuthorizedPosService {
             ? {
                 OR: [
                     { name: { contains: search, mode: 'insensitive' } },
-                    { description: { contains: search, mode: 'insensitive' } },
+                    { category: { contains: search, mode: 'insensitive' } },
                     { location: { contains: search, mode: 'insensitive' } },
                 ],
             }

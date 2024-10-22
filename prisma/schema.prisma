@@ -95,13 +95,17 @@ model ShippingInfo {
 }
 
 model AuthorizedPointOfSale {
-  id          String   @id @default(uuid())
-  logo        String
-  name        String
-  description String
-  location    String
-  branches    Int
-  category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String   @id @default(uuid())
+  name         String
+  location     String
+  locationlink String?
+  latitude     Float?
+  longitude    Float?
+  phone        String?
+  category     String
+  website      String?
+  logo         String
+  altLogo      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
